@@ -4,6 +4,7 @@
 // (Carpet Mod 1.4.20)
 //
 // Fixed for Charm Collection compatibility by Fam0r
+// Fixed right clicking with another block consuming it
 //
 // Allows the player to right-click on a crop to harvest it. The "Fortune" enchantment affects drops
 ///
@@ -31,27 +32,27 @@ __on_player_right_clicks_block(player, item_tuple, hand, block, face, hitvec) ->
                     harvest(player, pos(block));
                     if(player~'gamemode_id' == 1, set(pos(block), block, 'age', 0); return());
                     schedule(0,_(outer(player), outer(block)) -> (
-                            entities = entity_area('item', pos(block), [2, 2, 2]);
-                            for(entities,
-                                if(query(_, 'age') <= 1 && query(_, 'item'):0 == global_seeds:str(block),
+                        for(entity_area('item', pos(block), [2, 2, 2]),
+                            if(query(_, 'age') <= 1 && query(_, 'item'):0 == global_seeds:str(block), (
+                                if(air(pos(block)), (
                                     nbt = query(_, 'nbt');
                                     nbt:'Item.Count' = nbt:'Item.Count' - 1;
                                     modify(_, 'nbt', nbt);
                                     set(pos(block), block, 'age', 0);
-                                    return();
-                                );
-                            );
-
-                            // If no seeds on the ground, check if they can be taken from the inventory
-                            // Required for Collection enchantment
-                            slot = inventory_find(player, global_seeds:str(block));
-                            if(slot != null,
-                                inventory_remove(player, global_seeds:str(block), 1);
-                                set(pos(block), block, 'age', 0);
+                                ));
                                 return();
-                            );
+                            ));
                         );
-                    );
+
+                        // If no seeds on the ground, check if they can be taken from the inventory
+                        // Required for Collection enchantment
+                        slot = inventory_find(player, global_seeds:str(block));
+                        if(slot != null && air(pos(block)),
+                            inventory_remove(player, global_seeds:str(block), 1);
+                            set(pos(block), block, 'age', 0);
+                            return();
+                        );
+                    ));
                 );
             );
         );
