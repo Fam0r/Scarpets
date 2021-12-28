@@ -1,3 +1,5 @@
 // Alias for /tpaaccept
 
-__command() -> (run('tpaaccept');return(null))
+__config() -> {'stay_loaded' -> true};
+
+__command() -> (run('tpaaccept');return())

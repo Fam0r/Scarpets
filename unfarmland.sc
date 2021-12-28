@@ -1,6 +1,6 @@
 // Turns farmland back to dirt when right-clicked with a hoe
 
-__config() -> {'scope' -> 'global'};
+__config() -> {'stay_loaded' -> true, 'scope' -> 'global'};
 
 __on_player_right_clicks_block(player, item_tuple, hand, block, face, hitvec) -> (
     if(player~'gamemode_id' != 0 || block != 'farmland', return());
